@@ -1,15 +1,55 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.core import validators
+from django.forms import DateInput,TimeInput
+
 from .models import *
+from django.contrib.auth.forms import AuthenticationForm
 
 
-class Login (forms.ModelForm):
-    # username = forms.CharField (initial = 'username',)
-    password = forms.CharField (widget = forms.PasswordInput,validators = [validators.MinLengthValidator (4)])
+class Login(AuthenticationForm):
+    # username = forms.CharFielAuthenticationFormd (initial = 'username',)
+    # password = forms.CharField (widget = forms.PasswordInput,validators = [validators.MinLengthValidator (4)])
+
     class Meta:
-        model= Employee
-        fields = ['eemail','password']
+        model = SiteUser
+        fields = ('username','password')
 
+
+class Update(forms.ModelForm):
+    class Meta:
+        model = Attendance
+        fields = ('date','chin','chout')
+        widgets ={
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'chin': forms.TimeInput(attrs={'type': 'time'}),
+            'chout':forms.TimeInput(attrs={'type': 'time'}),
+        }
+
+
+class Add(forms.ModelForm):
+    class Meta:
+            model = Attendance
+            fields = ('date','chin','chout')
+            widgets = {
+                'date': forms.DateInput(attrs = {'type': 'date'}),
+                'chin': forms.TimeInput(attrs = {'type': 'time'}),
+                'chout': forms.TimeInput(attrs = {'type': 'time'}),
+                }
+
+        # def clean (self,*args,**kwargs):
+        #     username = self.cleaned_data.get ('username')
+        #     password = self.cleaned_data.get ('password')
+        #
+        #     if username and password:
+        #         user = authenticate (username = username,password = password)
+        #         if not user:
+        #             raise forms.ValidationError ('This user does not exist')
+        #         if not user.check_password (password):
+        #             raise forms.ValidationError ('Incorrect password')
+        #         if not user.is_active:
+        #             raise forms.ValidationError ('This user is not active')
+        #     return super (Login,self).clean (*args,**kwargs)
 
     # def clean_password (self):
     #     password = self.cleaned_data['password']
