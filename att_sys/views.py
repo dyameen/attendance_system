@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -9,13 +10,19 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 # from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import DurationField,ExpressionWrapper,F,IntegerField,Value,Sum
+from django.db.models.functions import Coalesce
+
+from django.template.defaulttags import register
+...
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 
 def index(request):
     return render(request, "index.html")
 
-
-# Create your views here.
 
 def loginform(request):
     print(request)
@@ -28,16 +35,14 @@ def loginform(request):
             user = authenticate(username=un, password=pwd)
             if user is not None:
                 login(request, user)
+                emp = Employee.objects.get(user = request.user.id)
                 messages.success(request, "login Successful!")
-
                 if request.user.role == "Admin":
                     return HttpResponseRedirect('/admin/')
-
                 elif request.user.role == "HR":
                     return HttpResponseRedirect('/att_sys/hrprofile/')
-
                 else:
-                    return HttpResponseRedirect(f"/att_sys/userpersonal/{request.user.id}")
+                    return HttpResponseRedirect(f"/att_sys/userpersonal/{emp.id}")
     else:
         fm = AuthenticationForm()
         print('In else')
@@ -54,40 +59,45 @@ def logout_profile(request):
 @csrf_exempt
 def hr_profile(request):
     user = Employee.objects.exclude(id=1)
+    emp = Employee.objects.get(user = request.user.id)
+    print(user)
     print("In HR profile")
     context = {
         'user': user,
-        'name': request.user,
+        'emp': emp,
     }
     return render(request, "hrprofile.html", context)
 
 
 def user_profile(request,id):
     print("In User profile")
-    user = Attendance.objects.filter(employee_id = id)
+    user = Attendance.objects.filter(employee_id = id).order_by('date')
     emp = Employee.objects.get(id=id)
-    print(user,"--------->")
+    dwh = {}
+    for i in user:
+        t1 = i.chin
+        t2 = i.chout
+        t1_datetime = datetime.datetime.combine(datetime.datetime.today(),t1)
+        t2_datetime = datetime.datetime.combine(datetime.datetime.today(),t2)
+        diff = t2_datetime-t1_datetime
+        wh = int(diff.total_seconds()/3600)
+        dwh[i.id] = wh
+    twh = sum(dwh.values())
     context = {
         'user': user,
         'name': request.user,
         'emp': emp,
+        'dwh': dwh,
+        'twh': twh,
     }
     return render(request, "userprofile.html", context)
 
 
-# def update(request,id):
-#     att = Attendance.objects.get(id = id)
-#     context = {
-#         'att': att,
-#         'name': request.user,
-#     }
-#     return render(request, "update.html",context)
 def update(request,id):
     print ("In Update")
     att = Attendance.objects.get(id = id)
     emp = Employee.objects.get(id=att.employee.id)
-
-    id_user= att.employee.id
+    id_user = att.employee.id
     print(emp,'------>')
     if request.method == "POST":
         fm = forms.Update(request.POST)
@@ -99,32 +109,17 @@ def update(request,id):
             user = Attendance(id=id, employee = emp,date = date,chin = chin,chout =chout)
             user.save()
             messages.success(request,"Successfully Updated!")
-            return HttpResponseRedirect(f"/att_sys/hrprofile/userprofile/{id_user}/success")
-
+            return HttpResponseRedirect(f"/att_sys/hrprofile/userprofile/{id_user}")
     else:
         fm = forms.Update(instance = att)
         print(fm)
     return render(request,"update.html",{'name': request.user,'form': fm , 'id_user':id_user})
 
 
-# def updaterecord(request, id):
-#     att = Attendance.objects.get(id =id)
-#     id_user = att.employee.user.id
-#     date = request.POST.get('date')
-#     chin = requeformatst.POST.get('chin')
-#     chout = request.POST.get('chout')
-#     att.date = date
-#     att.chin = chin
-#     att.chout = chout
-#     att.save()
-#     return HttpResponseRedirect(f'/att_sys/hrprofile/userprofile/{id_user}/')
-
-
 def success(request, id):
     user = Employee.objects.get(id=id)
     print("In success")
     return render(request, "success.html",{'user':user})
-    #return HttpResponseRedirect(f'/att_sys/hrprofile/userprofile/{id}/')
 
 
 def delete(request, id):
@@ -135,16 +130,13 @@ def delete(request, id):
 
 def delete_att(request,id):
     att = Attendance.objects.get(id=id)
-    id_user = att.employee.user.id
+    id_user = att.employee.id
     print(id_user)
     att.delete()
     return HttpResponseRedirect(f'/att_sys/hrprofile/userprofile/{id_user}/')
 
 
-
-
-
-def addrecord(request):
+def add(request):
     emp = Employee.objects.get(user = request.user)
     if request.method == "POST":
         fm = forms.Add(request.POST)
@@ -166,11 +158,26 @@ def addrecord(request):
 
 
 def user_personal(request,id):
+    emp = Employee.objects.get(user = request.user)
     print("In User profile")
-    user = Attendance.objects.filter(employee_id = id)
+    user = Attendance.objects.filter(employee_id = id).order_by('date')
     print(user,"--------->")
+    dwh = {}
+    for i in user:
+        t1 = i.chin
+        t2 = i.chout
+        t1_datetime = datetime.datetime.combine(datetime.datetime.today (),t1)
+        t2_datetime = datetime.datetime.combine(datetime.datetime.today (),t2)
+        diff = t2_datetime - t1_datetime
+        wh = int (diff.total_seconds() / 3600)
+        dwh[i.id] = wh
+    twh = sum (dwh.values ())
+
     context = {
         'user': user,
         'name': request.user,
+        'emp': emp,
+        'dwh': dwh,
+        'twh': twh,
     }
     return render(request, "userpersonal.html", context)
