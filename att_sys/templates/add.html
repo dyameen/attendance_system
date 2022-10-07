@@ -1,0 +1,215 @@
+<!doctype html>
+
+{% load static %}
+
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>UserProfile</title>
+
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="/static/css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="/static/css/magnific-popup.css" rel="stylesheet">
+
+        <link href="/static/css/tooplate-tween-agency.css" rel="stylesheet">
+
+
+    </head>
+
+    <body>
+        <nav class="navbar fixed-top navbar-expand-lg sticky-nav">
+            <div class="container">
+
+                <a href="/att_sys/userpersonal/{{emp.id}}" class="navbar-brand">
+                        <img height="50px" src="/static/images/heading.png">
+                </a>
+
+                <a href="/att_sys/logout" class="custom-btn btn btn-lg d-lg-none ms-auto me-4">
+                    Logout
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-lg-5">
+<!--                        <li class="nav-item">-->
+<!--                            <a class="custom-btn btn btn-lg" href="/att_sys/userpersonal/{{emp.id}}">Home</a>-->
+<!--                        </li>-->
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_2"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_3"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_4"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_5"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_6"></a>
+                        </li>
+                    </ul>
+
+                    <div class="ms-auto d-none d-lg-block">
+                        <a href="/att_sys/logout" class="custom-btn btn btn-lg">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="services section-padding" id="section_3">
+
+                <br><br>
+                <div class="container3">
+                            <h2 class="">Add Attendance:</h2>
+                            <h3>{{emp}}</h3>
+
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <small {% if message.tags %} class="{{message.tags}}" {%endif%}>{{message}}</small>
+                                {% endfor %}
+                            {%endif%}
+
+                            <form  method="POST" >
+                                        <!-- Very Important csrf Token -->
+                                        {% csrf_token %}
+                                        {% for fm in form %}
+
+                                        {% if att|length == 0 %}
+                                            {% if fm.name == 'date' %}
+                                                {{fm.label}}{{fm}}
+                                            <br>
+                                            {% elif fm.name == 'chin' %}
+                                                {{fm.label}}{{fm}}
+
+                                            {% endif %}
+                                        {% else %}
+                                            {% if fm.name == 'date' %}
+                                                {{fm.label}}{{fm}}
+                                            <br><br>
+                                            {% elif fm.name == 'chout' %}
+                                                {{fm.label}}{{fm}}
+                                            <br><br>
+                                            {% elif fm.name == 'remarks' %}
+                                                {{fm.label}}{{fm}}
+                                                {{fm.errors}}
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                        {% endfor %}
+                                <br>
+                                    <button class="button" type="submit">Submit</button>
+                            </form>
+<!--                            <form  method="POST" novalidate>-->
+<!--                                        &lt;!&ndash; Very Important csrf Token &ndash;&gt;-->
+<!--                                        {% csrf_token %}-->
+<!--                                        {{ form.as_p}}-->
+<!--                                    <button class="button" type="submit">Submit</button>-->
+<!--                            </form>-->
+                            <br>
+                            {% if user.role == 'HR' %}
+                            <a class="det1" href="/att_sys/hrprofile/">Back</a>
+                            <br><br>{%else%}
+                            <a class="det1" href="/att_sys/userpersonal/{{emp.id}}/">Back</a>
+                            {%endif%}
+
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-5 col-12 me-auto mb-4">
+
+                    </div>
+
+<!--                    <div class="col-lg-2 col-12 mx-auto my-lg-0 my-4">-->
+<!--                        <h5 class="text-white mb-3">Services</h5>-->
+
+<!--                        <ul class="footer-menu">-->
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Digital Marketing</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Creative Ideas</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Branding</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Video Contents</a></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                    <div class="col-lg-3 col-12">
+                        <h5 class="text-white mb-3">Get in Touch</h5>
+
+                        <p class="text-white mb-1">
+                        513,Ratanjali Square, Anand Nagar, Near Gloria Restaurant, Ahmedabad.</p>
+
+                        <p class="text-white mb-1"><a href="mailto:email@company.com" class="footer-link">contact@sheltersoft.in</a><p>
+                    </div>
+
+                    <div class="site-footer-bottom mt-5">
+                        <div class="row pt-4">
+                            <div class="col-lg-6 col-12">
+                                <p class="copyright-text tooplate-link">Copyright © 2022 ShelterSoft Ltd.
+                            </div>
+
+                            <div class="col-lg-6 col-6 ">
+                                <ul class="social-icon">
+                                    <li><a href="https://www.facebook.com/sheltersoft/" class="social-icon-link bi-facebook"></a></li>
+
+                                    <li><a href="#" class="social-icon-link bi-twitter"></a></li>
+
+                                    <li><a href="#" class="social-icon-link bi-instagram"></a></li>
+
+                                    <li><a href="linkedin.com/in/shelter-soft-97952820a" class="social-icon-link bi-linkedin"></a></li>
+
+                                    <li><a href="#" class="social-icon-link bi-youtube"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="/static/js/popper.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.backstretch.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/magnific-popup-options.js"></script>
+        <script src="/static/js/click-scroll.js"></script>
+        <script src="/static/js/custom.js"></script>
+    </body>
+</html>

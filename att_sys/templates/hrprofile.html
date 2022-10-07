@@ -1,0 +1,221 @@
+<!doctype html>
+
+{% load static %}
+
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>HR Profile</title>
+
+
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="/static/css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="/static/css/magnific-popup.css" rel="stylesheet">
+
+        <link href="/static/css/tooplate-tween-agency.css" rel="stylesheet">
+
+
+    </head>
+
+    <body>
+
+
+        <nav class="navbar fixed-top navbar-expand-lg sticky-nav ">
+            <div class="container">
+
+                <a href="/att_sys/hrprofile" class="navbar-brand">
+                        <img height="50px" src="/static/images/heading.png">
+                </a>
+
+                <a href="/att_sys/logout" class="custom-btn btn btn-lg d-lg-none ms-auto me-4">
+                    Logout
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-lg-5">
+<!--                        <li class="nav-item">-->
+<!--                            <a class="custom-btn btn btn-lg" href="/att_sys/hrprofile">Home</a>-->
+<!--                        </li>-->
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_2"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_3"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_4"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_5"></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#section_6"></a>
+                        </li>
+                    </ul>
+
+                    <div class="ms-auto d-none d-lg-block">
+                        <a href="/att_sys/logout" class="custom-btn btn btn-lg">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section class="services section-padding" id="section_3">
+
+                <br><br>
+                <div class="container">
+                    <div>
+                    <h2 class="ribbon">Welcome {{emp}} : {{emp.designation}}</h2>
+                    <br>
+                    <h3 class="ribbon1">Employee list</h3>
+                    <br>
+                    </div>
+                    <div class="div1" >
+                        <form action=""  method="POST">
+                            {% csrf_token %}
+                            <select name="role">
+                                    <option value="" selected="selected">All</option>
+                                    {% for i in designation %}
+                                    <option value={{i}}>{{i}}</option>
+                                    {% endfor %}
+                            </select>
+                            <select name="ename">
+                                    <option value="" selected="selected">All</option>
+                                    {% for i in ename %}
+                                    <option value="{{i}}">{{i}}</option>
+                                    {% endfor %}
+                            </select>
+
+                            <button class="det1" type="submit">Filter</button>
+                        </form>
+                        {% if att|length == 0 %}
+                         <a class="det1" style="margin-left:765px" href="/att_sys/userpersonal/add/">Check-in</a>
+                        {%else%}
+                        <a class="det1" style="margin-left:765px" href="/att_sys/userpersonal/add/">Check-out</a>
+                        {%endif%}
+                    </div>
+                    <div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <small {% if message.tags %} class="{{message.tags}}" {%endif%}>{{message}}</small>
+                        {%endfor%}
+                    {%endif%}
+                    <br>
+
+                    </div>
+                    <div style="overflow-x: auto; margin: auto;">
+                        {% if user  %}
+                        <table class= "styled-table" border="1">
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee name</th>
+                            <th>Check</th>
+                            <th>Delete</th>
+                        </tr>
+                        {% for x in user %}
+                        <tr>
+                            <td>{{x.id }}</td>
+                            <td>{{x.ename}}: {{x.designation}}</td>
+                            <td><a class="det" href="userprofile/{{x.id}}">Details</a></td>
+                            <td><a class='del' href="delete/{{x.id}}">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                        {% else %}
+                                <h1> User Not Found </h1>
+                        {%endif%}
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-5 col-12 me-auto mb-4">
+
+                    </div>
+
+<!--                    <div class="col-lg-2 col-12 mx-auto my-lg-0 my-4">-->
+<!--                        <h5 class="text-white mb-3">Services</h5>-->
+
+<!--                        <ul class="footer-menu">-->
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Digital Marketing</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Creative Ideas</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Branding</a></li>-->
+
+<!--                            <li class="footer-menu-item"><a href="#" class="footer-menu-link">Video Contents</a></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+                    <div class="col-lg-3 col-12">
+                        <h5 class="text-white mb-3">Get in Touch</h5>
+
+                        <p class="text-white mb-1">
+                        513,Ratanjali Square, Anand Nagar, Near Gloria Restaurant, Ahmedabad.</p>
+
+                        <p class="text-white mb-1"><a href="mailto:email@company.com" class="footer-link">contact@sheltersoft.in</a><p>
+                    </div>
+
+                    <div class="site-footer-bottom mt-5">
+                        <div class="row pt-4">
+                            <div class="col-lg-6 col-12">
+                                <p class="copyright-text tooplate-link">Copyright © 2022 ShelterSoft Ltd.
+                            </div>
+
+                            <div class="col-lg-6 col-6 ">
+                                <ul class="social-icon">
+                                    <li><a href="https://www.facebook.com/sheltersoft/" class="social-icon-link bi-facebook"></a></li>
+
+                                    <li><a href="linkedin.com/in/shelter-soft-97952820a" class="social-icon-link bi-linkedin"></a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="/static/js/jquery.min.js"></script>
+        <script src="/static/js/popper.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.backstretch.min.js"></script>
+        <script src="/static/js/jquery.magnific-popup.min.js"></script>
+        <script src="/static/js/magnific-popup-options.js"></script>
+        <script src="/static/js/click-scroll.js"></script>
+        <script src="/static/js/custom.js"></script>
+    </body>
+</html>
